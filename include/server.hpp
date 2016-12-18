@@ -148,8 +148,6 @@ void Server::download_to(CURL *curl_, std::string name, int i) {
 		curl_easy_setopt(curl_, CURLOPT_HEADER, 0L);
 		curl_easy_setopt(curl_, CURLOPT_WRITEDATA, (size_t)&file_stream);
 		curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, (size_t)Download::stream);
-		curl_easy_setopt(curl_, CURLOPT_CUSTOMREQUEST, "DELETE");
-		curl_easy_setopt(curl_, CURLOPT_URL, path_server.c_str());
 		curl_easy_perform(curl_);
 	}
 	file_stream.close();
@@ -168,9 +166,13 @@ auto Server::Entry()->void {
 		std::string t = path + "/temp/" + files_download[i];
 		temp_files.push_back(t);
 		download_to(curl_, t, i);
+		std::string path_server = server + "/" + files_download[i];
+		curl_easy_setopt(curl_, CURLOPT_CUSTOMREQUEST, "DELETE");
+		curl_easy_setopt(curl_, CURLOPT_URL, path_server.c_str());
 	}
 
-	bamthread::ThreadPool tp(2);
-	tp.enqueue(boost::bind(&Server::aes_decrypt, this, 0));
-	tp.enqueue(boost::bind(&Server::aes_decrypt, this, 1));
+	bamthread::ThreadPool tp(files_download.size());
+	for (int i = 0; i < files_download.size(); i++) {
+		tp.enqueue(boost::bind(&Server::aes_decrypt, this, i));
+	}
 }
