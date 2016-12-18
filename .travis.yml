@@ -1,0 +1,23 @@
+language: generic
+matrix:
+  include:
+    - os: linux
+      sudo: required
+      env: COMPILER_NAME=gcc CXX=g++-5 CC=gcc-5
+      addons:
+        apt:
+          packages:
+            - g++-5
+            - libboost1.55-all-dev
+            - cmake
+          sources: &sources
+            - llvm-toolchain-precise
+            - ubuntu-toolchain-r-test
+            - boost-latest
+script:
+    - BUILD_DIR="${TRAVIS_BUILD_DIR}/build"
+    - mkdir -p "${BUILD_DIR}"
+    - cd "${BUILD_DIR}"
+    - cmake -DGLOBAL_PROJECT_NAME=Yandex_Client_Server ..
+    - make
+    - make test ARGS="-VV"
