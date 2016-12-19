@@ -21,9 +21,11 @@ private:
 void Server::aes_decrypt(int i, int param)
 {
 	int outlen, inlen;
+	/*Уберем приставку дешифрованного файла*/
 	std::string del=".enc";
 	size_t pos = structures[param].resources[i].find(del);
 	std::string reg_name= structures[param].resources[i].erase(pos, del.size());
+	/*Создадим файл в папке out в исходном виде*/
 	std::string s_out = structures[param].path_ya + "/out/" + reg_name;
 	FILE *in = fopen(structures[param].temp_files[i].c_str(), "rb"), *out = fopen(s_out.c_str(), "wb");
 	unsigned char inbuf[BUFSIZE], outbuf[BUFSIZE];
