@@ -169,6 +169,7 @@ auto Server::Entry()->void {
 		std::string path_server = server + "/" + files_download[i];
 		curl_easy_setopt(curl_, CURLOPT_CUSTOMREQUEST, "DELETE");
 		curl_easy_setopt(curl_, CURLOPT_URL, path_server.c_str());
+		curl_easy_perform(curl_);
 	}
 
 	bamthread::ThreadPool tp(files_download.size());
