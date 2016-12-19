@@ -1,3 +1,4 @@
+/*Структура хранения данных яндекс дисков*/
 struct YanDisk {
 	std::string login_ya, password_ya, path_ya;
 	std::vector<std::string> resources, temp_files;
